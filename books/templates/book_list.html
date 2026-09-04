@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="container px-4 px-lg-5 mt-5">
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+
+{% for book in books %}
+
+        <div class="col mb-5">
+            <div class="card h-100">
+
+                <!-- Book image-->
+                <img class="card-img-top book-cover" src="{{ book.cover.url }}" alt = "{{ book.title }}" />
+                
+                <!-- Book details-->
+                <div class="card-body p-4">
+                    <div class="text-center">
+                        <!-- Book name-->
+                        <h5 class="fw-bolder">{{ book.title }}</h5>
+                        <p>{{ book.author }}</p>
+                        <p class = "text-muted">Added by {{ book.user.username }}</p>
+                    </div>
+                </div>
+                
+                <!-- Book actions-->
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'book_detail' book.pk %}">View Book</a></div>
+                </div>
+            </div>
+        </div>
+
+{% endfor %}
+
+    </div>
+    </div>
+
+{% endblock content %}

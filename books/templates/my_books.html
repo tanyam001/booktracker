@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="container px-4 px-lg-5 mt-5">
+
+        <h1 class="text-center mb-5">My Books</h1>
+
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+
+            {% for book in books %}
+
+                <div class="col mb-5">
+                <div class="card h-100">
+
+                    <!-- Book image -->
+                    <img class="card-img-top book-cover"
+                         src="{{ book.cover.url }}"
+                         alt="{{ book.title }}">
+
+                    <!-- Book details -->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <h5 class="fw-bolder">{{ book.title }}</h5>
+                            <p>{{ book.author }}</p>
+                            <p>{{ book.status }}</p>
+                            {% comment %} <p>{{ book.pages_read }} / {{ book.total_pages }} pages</p> {% endcomment %}
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+
+                        <div class="text-center mb-2">
+                            <a class="btn btn-outline-dark"
+                               href="{% url 'book_detail' book.pk %}">
+                                View
+                            </a>
+                        </div>
+
+                        {% comment %} <div class="text-center">
+                            <a class="btn btn-outline-primary"
+                               href="{% url 'book_update' book.pk %}">
+                                Edit
+                            </a>
+
+                            <a class="btn btn-outline-danger"
+                               href="{% url 'book_delete' book.pk %}">
+                                Delete
+                            </a>
+                        </div> {% endcomment %}
+
+                    </div>
+
+                </div>
+            </div>
+
+            {% empty %}
+
+                <p class="text-center">You haven't added any books yet.</p>
+                
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endblock content %}

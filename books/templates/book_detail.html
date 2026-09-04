@@ -1,0 +1,149 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <!-- Book Cover -->
+    <div class="text-center mb-4">
+        {% if book.cover %}
+            <img src="{{ book.cover.url }}"
+                 alt="{{ book.title }}"
+                 class="card-img-top book-cover"
+                 style="max-height: 500px;">
+        {% endif %}
+    </div>
+
+
+    <!-- Book Information -->
+    <div class="text-center mb-5">
+
+        <h1>{{ book.title }}</h1>
+        <h4 class="text-muted">{{ book.author }}</h4>
+
+        <div class="row justify-content-center mt-4">
+
+            <div class="col-md-2">
+                <strong>Genre</strong>
+                <p>{{ book.genre }}</p>
+            </div>
+
+            <div class="col-md-2">
+                <strong>Status</strong>
+                <p>{{ book.get_status_display }}</p>
+            </div>
+
+            <div class="col-md-2">
+                <strong>Progress</strong>
+                <p>{{ book.pages_read }} / {{ book.total_pages }}</p>
+            </div>
+
+            <div class="col-md-2">
+                <strong>Rating</strong>
+
+                <p>
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= book.rating %}
+                            <span class="text-warning">★</span>
+                        {% else %}
+                            <span class="text-muted">☆</span>
+                        {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+
+            <div class="col-md-2">
+                <strong>Added by</strong>
+                <p>{{ book.user.username }}</p>
+            </div>
+
+        </div>
+
+        {% if book.notes %}
+            <div class="mt-4">
+                <strong>Notes</strong>
+                <p>{{ book.notes }}</p>
+            </div>
+        {% endif %}
+
+    </div>
+
+    {% if user.is_authenticated and book.user == user %}
+
+        <div class="text-center mb-5">
+
+        <a href="{% url 'book_update' book.pk %}"
+           class="btn btn-primary me-2">
+            Edit Book
+        </a>
+
+        <a href="{% url 'book_delete' book.pk %}"
+           class="btn btn-danger">
+            Delete Book
+        </a>
+
+    </div>
+
+    {% endif %}
+
+    <!-- Comments -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <h3 class="text-center mb-4">Comments</h3>
+
+            {% if user.is_authenticated %}
+
+                <form method = "POST" action = "{% url 'add_comment' book.pk %}" class = "mb-5">{% csrf_token %}
+                    {% comment %} {{ from.text }} {% endcomment %}
+                    <textarea name = "text" class = "form-control" rows = "3" placeholer = "write a comment..."></textarea>
+                    <button type = "submit" class = "btn btn-primary mt-2">Post Comment</button>
+                </form>
+            
+            {% else %}
+                <p class = "text-center text-muted mb-4">
+                <a href = "{% url 'login' %}">Log In</a> to post a comment
+                </p>
+            {% endif %}
+
+            {% for comment in book.comments.all %}
+
+                <div class="border rounded p-3 mb-3">
+
+                    <strong>{{ comment.user.username }}</strong>
+
+                    <p class="mb-1">
+                        {{ comment.text }}
+                    </p>
+
+                    <small class="text-muted">
+                        {{ comment.created_on }}
+                    </small>
+
+                    {% if user.is_authenticated %}
+                        <div class = "mt-2">
+                            <form method = "POST" action = "{% url 'delete_comment' comment.pk %}" style = "display: inline;">
+                                {% csrf_token %}
+                                <button type = "submit" class = "btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </div>
+                        {% endif %}
+
+                </div>
+
+            {% empty %}
+
+                <p class="text-center text-muted">
+                    No comments yet.
+                </p>
+
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}
+
